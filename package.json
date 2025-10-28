@@ -1,14 +1,11 @@
 {
   "name": "com.unityessentials.cameraframeratelimiter",
   "version": "1.0.0",
-  "displayName": "UnityEssentials CameraFrameRateLimiter",
+  "displayName": "Unity Rendering Camera FrameRateLimiter",
   "description": "This is a part of the UnityEssentials Ecosystem",
-  "unity": "2022.1",
+  "unity": "6000.0",
   "unityRelease": "",
-  "dependencies": {
-    "com.unityessentials.core": "1.0.0",
-    "com.unityessentials.globalrefreshratelimiter": "1.0.0"
-  },
+  "dependencies": {},
   "keywords": [],
   "author": {
     "name": "Unity Essentials",
