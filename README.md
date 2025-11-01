@@ -47,7 +47,7 @@ Per‑camera frame rate limiting is applied by gating when a camera renders. A g
   - No allocations in the hot path and minimal state: next render time tracked per camera
 
 ## Requirements
-- Unity 6000.0+ (per package manifest)
+- Unity 6000.0+
 - A Camera component on the same GameObject (added by `[RequireComponent]`)
 - Global frame limiter module present and active
   - This component subscribes to `GlobalRefreshRateLimiter.OnFrameLimiterTick` provided by the `Unity.Rendering.GlobalRefreshrateLimiter` package
