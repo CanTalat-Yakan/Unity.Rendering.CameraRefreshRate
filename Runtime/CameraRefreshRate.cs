@@ -38,7 +38,7 @@ namespace UnityEssentials
                 _camera.enabled = true;
         }
 
-        public void SetTargetRefreshRate(int refreshRate) =>
+        public void SetTarget(int refreshRate) =>
             Settings.RefreshRate = refreshRate;
 
         public void TryRender()
