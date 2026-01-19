@@ -12,7 +12,7 @@ namespace UnityEssentials
     }
 
     [RequireComponent(typeof(Camera))]
-    public class CameraFrameRateLimiter : MonoBehaviour
+    public class CameraFrameRate : MonoBehaviour
     {
         public FrameRateLimiterSettings Settings;
 
