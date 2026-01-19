@@ -1,7 +1,7 @@
 {
-  "name": "com.unityessentials.cameraframeratelimiter",
+  "name": "com.unityessentials.camerarefreshrate",
   "version": "1.0.0",
-  "displayName": "Unity Rendering Camera FrameRateLimiter",
+  "displayName": "Unity Rendering CameraRefreshRate",
   "description": "This is a part of the UnityEssentials Ecosystem",
   "unity": "6000.0",
   "unityRelease": "",

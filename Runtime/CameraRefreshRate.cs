@@ -5,16 +5,16 @@ using UnityEngine.Rendering;
 namespace UnityEssentials
 {
     [Serializable]
-    public class FrameRateLimiterSettings
+    public class RefreshRateSettings
     {
-        public int FrameRate = 120;
+        public int RefreshRate = 120;
         public bool SendRenderRequest = false;
     }
 
     [RequireComponent(typeof(Camera))]
-    public class CameraFrameRate : MonoBehaviour
+    public class CameraRefreshRate : MonoBehaviour
     {
-        public FrameRateLimiterSettings Settings;
+        public RefreshRateSettings Settings;
 
         private Camera _camera;
         private double _nextRenderTime;
@@ -24,7 +24,7 @@ namespace UnityEssentials
 
         public void OnEnable()
         {
-            GlobalRefreshRateLimiter.OnFrameLimiterTick += TryRender;
+            GlobalRefreshRate.OnTick += TryRender;
 
             _camera.enabled = false;
             _nextRenderTime = Time.timeAsDouble;
@@ -32,18 +32,18 @@ namespace UnityEssentials
 
         public void OnDisable()
         {
-            GlobalRefreshRateLimiter.OnFrameLimiterTick -= TryRender;
+            GlobalRefreshRate.OnTick -= TryRender;
 
             if (_camera != null)
                 _camera.enabled = true;
         }
 
-        public void SetTargetFrameRate(int frameRate) =>
-            Settings.FrameRate = frameRate;
+        public void SetTargetRefreshRate(int refreshRate) =>
+            Settings.RefreshRate = refreshRate;
 
         public void TryRender()
         {
-            if (Settings.FrameRate <= 0)
+            if (Settings.RefreshRate <= 0)
             {
                 if (Settings.SendRenderRequest)
                     SendRenderRequest();
@@ -54,13 +54,13 @@ namespace UnityEssentials
 
             _camera.enabled = false;
             double currentTime = Time.timeAsDouble;
-            if (currentTime >= _nextRenderTime && Settings.FrameRate > 0)
+            if (currentTime >= _nextRenderTime && Settings.RefreshRate > 0)
             {
                 if (Settings.SendRenderRequest) 
                     SendRenderRequest();
                 else _camera.enabled = true;
 
-                _nextRenderTime = currentTime + (1.0 / Settings.FrameRate);
+                _nextRenderTime = currentTime + (1.0 / Settings.RefreshRate);
             }
         }
 

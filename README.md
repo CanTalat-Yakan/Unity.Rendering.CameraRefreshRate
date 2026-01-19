@@ -24,18 +24,18 @@ Install the Unity Essentials entry package via Unity's Package Manager, then ins
 
 ---
 
-# Camera Frame Rate Limiter
+# Camera Refresh Rate
 
-> Quick overview: Per‑camera rendering frequency can be limited to a target FPS, using either normal camera rendering or SRP render requests, synchronized by a global frame‑limiter tick.
+> Quick overview: Per‑camera rendering frequency can be limited to a target FPS, using either normal camera rendering or SRP render requests, synchronized by a global refresh rate tick.
 
-Per‑camera frame rate limiting is applied by gating when a camera renders. A global tick is listened to and, at scheduled times, either the camera is temporarily enabled to render a frame or a Scriptable Render Pipeline (SRP) render request is submitted. Between scheduled renders, the camera remains disabled. The approach helps reduce rendering load for secondary or expensive cameras.
+Per‑camera refresh rate limiting is applied by gating when a camera renders. A global tick is listened to and, at scheduled times, either the camera is temporarily enabled to render a refresh or a Scriptable Render Pipeline (SRP) render request is submitted. Between scheduled renders, the camera remains disabled. The approach helps reduce rendering load for secondary or expensive cameras.
 
 ![screenshot](Documentation/Screenshot.png)
 
 ## Features
 - Target FPS per camera
   - An integer FPS target controls how often the camera is allowed to render
-  - `SetTargetFrameRate(int)` can be called at runtime
+  - `SetTargetRefreshRate(int)` can be called at runtime
 - Two render paths
   - Normal path: the camera is enabled only on scheduled frames (disabled otherwise)
   - SRP path: a `RenderPipeline.StandardRequest` is submitted instead of toggling `enabled`
@@ -49,18 +49,18 @@ Per‑camera frame rate limiting is applied by gating when a camera renders. A g
 ## Requirements
 - Unity 6000.0+
 - A Camera component on the same GameObject (added by `[RequireComponent]`)
-- Global frame limiter module present and active
-  - This component subscribes to `GlobalRefreshRateLimiter.OnFrameLimiterTick` provided by the `Unity.Rendering.GlobalRefreshrateLimiter` package
-  - Optionally, a global setting component (e.g., `SettingsGlobalFrameRateLimit`) can set the global target FPS
+- Global refresh rate module present and active
+  - This component subscribes to `GlobalRefreshRateLimiter.OnTick` provided by the `Unity.Rendering.GlobalRefreshRate` package
+  - Optionally, a global setting component (e.g., `SettingsGlobalRefreshRate`) can set the global target FPS
 - For SRP render requests
   - A Scriptable Render Pipeline that supports `RenderPipeline.SubmitRenderRequest`
   - A valid `targetTexture` when using the request path is recommended (destination is set to the camera’s `targetTexture`)
 
 ## Usage
 1) Add to a camera
-   - Select the Camera GameObject and add `CameraFrameRateLimiter`
+   - Select the Camera GameObject and add `CameraRefreshRateLimiter`
 2) Configure target FPS
-   - Set `Settings.FrameRate` to the desired limit (e.g., 30)
+   - Set `Settings.RefreshRate` to the desired limit (e.g., 30)
    - Set to `0` or less to bypass limiting for that camera
 3) Choose render path
    - Normal rendering: leave `SendRenderRequest` unchecked (camera is enabled only at scheduled frames)
@@ -68,18 +68,18 @@ Per‑camera frame rate limiting is applied by gating when a camera renders. A g
    - For SRP request mode, assign a `RenderTexture` to `Camera.targetTexture` if off‑screen rendering is desired
 4) Global limiter
    - Ensure the `Unity.Rendering.GlobalRefreshrateLimiter` module is present so the global tick is raised
-   - Optionally call `GlobalRefreshRateLimiter.SetTargetFrameRate(...)` elsewhere to define a global cadence
+   - Optionally call `GlobalRefreshRateLimiter.SetTargetRefreshRate(...)` elsewhere to define a global cadence
 
 ## How It Works
 - Subscription
-  - On enable, the component subscribes to a global tick (`GlobalRefreshRateLimiter.OnFrameLimiterTick`) and disables the camera
+  - On enable, the component subscribes to a global tick (`GlobalRefreshRateLimiter.OnTick`) and disables the camera
 - Scheduling
-  - A per‑camera `_nextRenderTime` is computed; when the current time exceeds it, a render is triggered and the next slot is scheduled as `now + 1/FrameRate`
+  - A per‑camera `_nextRenderTime` is computed; when the current time exceeds it, a render is triggered and the next slot is scheduled as `now + 1/RefreshRate`
 - Render trigger
   - Normal path: the camera is briefly enabled so Unity renders it in that frame
   - SRP path: a `RenderPipeline.StandardRequest` is submitted if supported by the active SRP
 - Unlimited
-  - When `FrameRate <= 0`, the limiter defers to normal rendering (or continuously issues requests if SRP mode is selected)
+  - When `RefreshRate <= 0`, the limiter defers to normal rendering (or continuously issues requests if SRP mode is selected)
 - Cleanup
   - On disable, the component unsubscribes and re‑enables the camera for normal behavior
 
@@ -91,8 +91,8 @@ Per‑camera frame rate limiting is applied by gating when a camera renders. A g
 - Time basis: scheduling uses `Time.timeAsDouble`; large time scale changes affect cadence accordingly
 
 ## Files in This Package
-- `Runtime/CameraFrameRateLimiter.cs` – Per‑camera frame rate limiter (normal render vs SRP request)
-- `Runtime/UnityEssentials.CameraFrameRateLimiter.asmdef` – Runtime assembly definition
+- `Runtime/CameraRefreshRate.cs` – Per‑camera refresh rate limiter (normal render vs SRP request)
+- `Runtime/UnityEssentials.CameraRefreshRateLimiter.asmdef` – Runtime assembly definition
 
 ## Tags
-unity, camera, framerate, fps, limiter, render, performance, srp, render-request, offscreen
+unity, camera, refreshrate, fps, limiter, render, performance, srp, render-request, offscreen
