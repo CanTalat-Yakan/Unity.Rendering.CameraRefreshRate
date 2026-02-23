@@ -7,7 +7,7 @@ namespace UnityEssentials
     [Serializable]
     public class RefreshRateSettings
     {
-        public int RefreshRate = 120;
+        public int RefreshRate = 0;
         public bool SendRenderRequest = false;
     }
 
@@ -66,13 +66,14 @@ namespace UnityEssentials
 
         private void SendRenderRequest()
         {
+            if (_camera.targetTexture == null)
+                return;
+
             var request = new RenderPipeline.StandardRequest();
+            request.destination = _camera.targetTexture;
 
             if (RenderPipeline.SupportsRenderRequest(_camera, request))
-            {
-                request.destination = _camera.targetTexture;
                 RenderPipeline.SubmitRenderRequest(_camera, request);
-            }
         }
     }
 }
